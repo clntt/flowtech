@@ -28,8 +28,8 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav: boolean }) => {
             href={item.route}
             key={item.label}
             className={cn(
-              isActive ? "bg-amber-500 text-white rounded-lg border" : "",
-              "flex items-center justify-start gap-4 p-4"
+              isActive ? "bg-amber-500 text-white rounded-lg" : "",
+              "flex items-center justify-start gap-4 p-4 "
             )}
           >
             <Image
@@ -37,7 +37,7 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav: boolean }) => {
               alt={item.label}
               width={20}
               height={20}
-              className={cn(isActive ? "text-white" : "invert")}
+              className={cn(isActive ? "text-white" : "xs:invert")}
             />
             <p
               className={cn(
