@@ -1,24 +1,76 @@
-import { auth, signOut } from "@/auth";
-// import { Button } from "@/components/ui/button";
+import HomeFilter from "@/components/filters/HomeFilter";
+import LocalSearch from "@/components/search/LocalSearch";
+import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
+import Link from "next/link";
 
-const Home = async () => {
-  const session = await auth();
-  console.log(session);
+const questions = [
+  {
+    _id: "1",
+    title: "How to learn React",
+    description: "i want to learn React, can anyone help me?",
+    tags: [
+      { _id: "1", name: "react" },
+      { _id: "2", name: "Javascript" },
+    ],
+    author: { _id: "1", name: "John Doe" },
+    upvotes: 12,
+    answers: 3,
+    views: 100,
+    createdAt: new Date(),
+  },
+  {
+    _id: "2",
+    title: "How to learn Next.Js",
+    description: "i want to learn Next.Js, can anyone help me?",
+    tags: [
+      { _id: "1", name: "Next.js" },
+      { _id: "2", name: "Javascript" },
+    ],
+    author: { _id: "1", name: "peter McClean" },
+    upvotes: 10,
+    answers: 32,
+    views: 10,
+    createdAt: new Date(),
+  },
+];
+
+interface SearchParams {
+  searchParams: Promise<{ [key: string]: string }>;
+}
+const Home = async ({ searchParams }: SearchParams) => {
+  const { query = "", filter } = await searchParams;
+
+  const filteredQuestions = questions.filter((item) =>
+    item.title.toLowerCase().includes(query?.toLowerCase())
+  );
+
   return (
     <>
-      <h1 className="h1-bold">FlowTech</h1>
+      <section className="flex w-full  flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
+        <h1 className="h1-bold ">All Questions</h1>
 
-      <form
-        className="px-10 pt-[100px]"
-        action={async () => {
-          "use server";
-
-          await signOut({ redirectTo: ROUTES.SIGN_IN });
-        }}
-      >
-        {/* <Button type="submit">Log out</Button> */}
-      </form>
+        <Button
+          asChild
+          className="bg-amber-500 min-h-[46px] px-4 py-3 text-white"
+        >
+          <Link href={ROUTES.ASK_QUESTION}>Ask a Question</Link>
+        </Button>
+      </section>
+      <section className="mt-11">
+        <LocalSearch
+          route="/"
+          placeholder="Search Questions"
+          imgSrc="/icons/search.svg"
+          otherClasses=""
+        />
+      </section>
+      <HomeFilter />
+      <div className="mt-10 flex w-full flex-col gap-6">
+        {filteredQuestions.map((item) => (
+          <h1 key={item._id}>{item.title}</h1>
+        ))}
+      </div>
     </>
   );
 };
