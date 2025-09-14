@@ -9,6 +9,8 @@ const ROUTES = {
   // PROFILE: (id: string) => `/profile/${id}`,
   PROFILE: ``,
   ASK_QUESTION: "/ask-a-question",
+  QUESTION: (id: string) => `/question/${id}`,
+  // TAGS: (id: string) => `/tags/${id}`,
 };
 
 export default ROUTES;
