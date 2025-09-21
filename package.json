@@ -10,12 +10,14 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
+    "@mdxeditor/editor": "^3.46.0",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cm6-theme-basic-dark": "^0.2.0",
     "lucide-react": "^0.525.0",
     "next": "15.3.5",
     "next-auth": "^5.0.0-beta.29",
@@ -31,6 +33,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.18",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
