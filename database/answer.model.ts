@@ -1,22 +1,52 @@
-import { model, models, Schema, Types } from "mongoose";
+// import { model, models, Schema, Types } from "mongoose";
+
+// export interface IAnswer {
+//   author: Types.ObjectId;
+//   content: string;
+//   title: string;
+//   image?: string;
+//   question: Types.ObjectId;
+//   upvotes?: { type: number; default: 0 };
+//   downvotes?: { type: number; default: 0 };
+// }
+
+// export const AnswerSchema = new Schema<IAnswer>(
+//   {
+//     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
+//     question: { type: Schema.Types.ObjectId, ref: "Question", required: true },
+//     content: { type: String, required: true },
+//     downvotes: { type: Number, default: 0 },
+//     upvotes: { type: Number, default: 0 },
+//   },
+//   { timestamps: true }
+// );
+
+// const Answer = models?.Answer || model<IAnswer>("Answer", AnswerSchema);
+
+// export default Answer;
+
+import { Schema, models, model, Types, Document } from "mongoose";
 
 export interface IAnswer {
   author: Types.ObjectId;
-  content: string;
-  title: string;
-  image?: string;
   question: Types.ObjectId;
-  upvotes?: { type: number; default: 0 };
-  downvotes?: { type: number; default: 0 };
+  content: string;
+  upvotes: number;
+  downvotes: number;
 }
 
-export const AnswerSchema = new Schema<IAnswer>(
+export interface IAnswerDoc extends IAnswer, Document {}
+const AnswerSchema = new Schema<IAnswer>(
   {
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    question: { type: Schema.Types.ObjectId, ref: "Question", required: true },
+    question: {
+      type: Schema.Types.ObjectId,
+      ref: "Question",
+      required: true,
+    },
     content: { type: String, required: true },
-    downvotes: { type: Number, default: 0 },
     upvotes: { type: Number, default: 0 },
+    downvotes: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

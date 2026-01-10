@@ -1,19 +1,40 @@
-import { model, models, Schema, Types } from "mongoose";
+// import { model, models, Schema, Types } from "mongoose";
+
+// export interface ICollection {
+//   author: Types.ObjectId;
+//   question: Types.ObjectId;
+// }
+
+// export const CollectionSchema = new Schema<ICollection>(
+//   {
+//     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
+//     question: { type: Schema.Types.ObjectId, ref: "Question" },
+//   },
+//   { timestamps: true }
+// );
+
+// export const Collection =
+//   models?.Collection || model<ICollection>("Collection", CollectionSchema);
+
+// export default Collection;
+
+import { Schema, models, model, Types, Document } from "mongoose";
 
 export interface ICollection {
   author: Types.ObjectId;
   question: Types.ObjectId;
 }
 
-export const CollectionSchema = new Schema<ICollection>(
+export interface ICollectionDoc extends ICollection, Document {}
+const CollectionSchema = new Schema<ICollection>(
   {
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    question: { type: Schema.Types.ObjectId, ref: "Question" },
+    question: { type: Schema.Types.ObjectId, ref: "Question", required: true },
   },
   { timestamps: true }
 );
 
-export const Collection =
+const Collection =
   models?.Collection || model<ICollection>("Collection", CollectionSchema);
 
 export default Collection;
