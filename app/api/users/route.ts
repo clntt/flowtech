@@ -1,5 +1,5 @@
 import User from "@/database/user.model";
-import handleError from "@/lib/handlers/errror";
+import handleError from "@/lib/handlers/error";
 import { ValidationError } from "@/lib/http-errors";
 import { dbConnect } from "@/lib/mongoose";
 import { UserSchema } from "@/lib/validations";
