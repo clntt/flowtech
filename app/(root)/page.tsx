@@ -41,6 +41,7 @@ const questions = [
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMdBuvbsYu7WYAAUY2AqSQRGNESsYdkucDkQ&s",
     },
     upvotes: 10,
+    downvotes: 54,
     answers: 32,
     views: 10,
     createdAt: new Date("2025-9-2"),
@@ -51,7 +52,7 @@ interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 const Home = async ({ searchParams }: SearchParams) => {
-  const { query = "", filter } = await searchParams;
+  const { query = "" } = await searchParams;
 
   const filteredQuestions = questions.filter((item) =>
     item.title.toLowerCase().includes(query?.toLowerCase())
