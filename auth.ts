@@ -96,5 +96,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       return true;
     },
+
+    async session({ session, token, user }) {
+      // For OAuth logins
+      if (session.user && token?.sub) {
+        session.user.id = token.sub;
+      }
+
+      // For Credentials logins (extra safety)
+      if (session.user && user?.id) {
+        session.user.id = user.id;
+      }
+
+      return session;
+    },
   },
 });
