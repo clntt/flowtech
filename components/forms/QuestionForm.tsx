@@ -1,7 +1,7 @@
 "use client";
 import { AskQuestionSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useRef } from "react";
+import React, { useRef, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -18,13 +18,19 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import dynamic from "next/dynamic";
 import z from "zod";
 import TagCard from "../cards/TagCard";
-
+import { createquestion } from "@/lib/actions/question.action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import ROUTES from "@/constants/routes";
+// import ReloadIcon from "@radix-ui/react-icons";
 const Editor = dynamic(() => import("@/components/editor"), {
   // Make sure we turn SSR off
   ssr: false,
 });
 const QuestionForm = () => {
+  const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
+  const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof AskQuestionSchema>>({
     resolver: zodResolver(AskQuestionSchema),
     defaultValues: {
@@ -34,7 +40,27 @@ const QuestionForm = () => {
     },
   });
 
-  const handleCreateQuestion = (data: z.infer<typeof AskQuestionSchema>) => {};
+  const handleCreateQuestion = async (
+    data: z.infer<typeof AskQuestionSchema>
+  ) => {
+    startTransition(async () => {
+      const result = await createquestion(data);
+
+      if (result.success) {
+        toast.success("success", {
+          description: "Question created successfully",
+          duration: 3000,
+        });
+
+        if (result.data) router.push(ROUTES.QUESTION(result.data?._id));
+      } else {
+        toast.error("Question creation failed", {
+          description: result.error?.message || "failed to create question",
+          duration: 3000,
+        });
+      }
+    });
+  };
 
   const handleInputKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -171,8 +197,19 @@ const QuestionForm = () => {
           )}
         />
         <div className="mt-16 flex justify-end">
-          <Button className="bg-amber-500 text-white w-fit" type="submit">
-            Ask Question
+          <Button
+            className="bg-amber-500 text-white w-fit"
+            type="submit"
+            disabled={isPending}
+          >
+            {isPending ? (
+              <>
+                {/* <ReloadIcon className='mr-2 size-4 animate-spin'/> */}
+                <span>Submitting</span>
+              </>
+            ) : (
+              <>Ask Question</>
+            )}
           </Button>
         </div>
       </form>

@@ -32,6 +32,7 @@
 import { Schema, models, model, Document } from "mongoose";
 
 export interface IUser {
+  authId: string;
   name: string;
   username: string;
   email: string;
@@ -45,6 +46,12 @@ export interface IUser {
 export interface IUserDoc extends IUser, Document {}
 const UserSchema = new Schema<IUser>(
   {
+    authId: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true, // 👈 fast lookups from session
+    },
     name: { type: String, required: true },
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
