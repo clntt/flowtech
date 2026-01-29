@@ -21,7 +21,7 @@ const handleClick = (e: React.MouseEvent) => {
 };
 
 const TagCard = ({
-  _id,
+  // _id,
   questions,
   name,
   showCount,
@@ -62,7 +62,9 @@ const TagCard = ({
         {Content}
       </button>
     ) : (
-      <Link href={""} className="flex justify-between gap-2 " key={_id}></Link>
+      <Link href={""} className="flex justify-between gap-2">
+        {Content}
+      </Link>
     );
   }
 };

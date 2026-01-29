@@ -60,11 +60,17 @@ interface Author {
   image: string;
 }
 
+type PopulatedTag = {
+  _id: string;
+  name: string;
+};
+
 interface Question {
   _id: string;
   title: string;
   content: string;
-  tags: Tag[];
+  tags: PopulatedTag[];
+  // tags: Tag[];
   author: Author;
   createdAt: Date;
   upvotes: number;
