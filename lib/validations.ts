@@ -123,15 +123,32 @@ export const AskQuestionSchema = z.object({
     })
     .max(130, { message: "Title musn't be longer then 130 characters." }),
   content: z.string().min(100, { message: "Minimum of 100 characters." }),
+  // tags: z
+  //   .array(
+  //     z
+  //       .string()
+  //       .min(1, { message: "Tag must have at least 1 character." })
+  //       .max(15, { message: "Tag must not exceed 15 characters." })
+  //   )
+  //   .min(1, { message: "Add at least one tag." })
+  //   .max(3, { message: "Maximum of 3 tags." }),
   tags: z
     .array(
       z
         .string()
-        .min(1, { message: "Tag must have at least 1 character." })
+        .trim()
+        .toLowerCase()
+        .min(2, { message: "Tag must be at least 2 characters." })
         .max(15, { message: "Tag must not exceed 15 characters." })
+        .regex(/^[a-z0-9-]+$/, {
+          message: "Tags may only contain letters, numbers, and hyphens.",
+        })
     )
     .min(1, { message: "Add at least one tag." })
-    .max(3, { message: "Maximum of 3 tags." }),
+    .max(3, { message: "You can add up to 3 tags only." })
+    .refine((tags) => new Set(tags).size === tags.length, {
+      message: "Tags must be unique.",
+    }),
 });
 
 export const UserSchema = z.object({
