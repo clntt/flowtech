@@ -2,7 +2,7 @@
 import Link from "next/link";
 import React from "react";
 import { Badge } from "../ui/badge";
-import { getDeviconClassName } from "@/lib/utils";
+import { cn, getDeviconClassName, getTechDescription } from "@/lib/utils";
 import Image from "next/image";
 import ROUTES from "@/constants/routes";
 
@@ -32,6 +32,11 @@ const TagCard = ({
   handleRemove,
 }: Props) => {
   const iconName = getDeviconClassName(name);
+  const iconDescription = getTechDescription(name);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+  };
 
   const Content = (
     <>
@@ -68,6 +73,26 @@ const TagCard = ({
       </Link>
     );
   }
+
+  return (
+    <Link href={ROUTES.TAG(_id)} className="">
+      <article className="flex flex-col rounded-2xl border px-8 py-10 sm:w-[260px] bg-gray-800 text-white">
+        <div className="flex items-center justify-between gap-3">
+          <div className="w-fit rounded-sm px-5 py-1.5 bg-gray-600">
+            <p className="">{name}</p>
+          </div>
+          <i className={cn(iconName, "text-2xl")} aria-hidden="true" />
+        </div>
+
+        <p className="mt-5 line-clamp-3 w-full">{iconDescription}</p>
+
+        <p className="mt-3.5 text-gray-500">
+          <span className="mr-2.5 text-orange-400">{questions}+</span>
+          Questions
+        </p>
+      </article>
+    </Link>
+  );
 };
 
 export default TagCard;

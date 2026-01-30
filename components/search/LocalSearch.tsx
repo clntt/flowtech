@@ -9,11 +9,18 @@ import { formUrlquery, removeKeysFromUrlquery } from "@/lib/url";
 interface Props {
   imgSrc: string;
   route: string;
+  iconPosition?: "right" | "left";
   otherClasses?: string;
   placeholder: string;
 }
 
-const LocalSearch = ({ imgSrc, route, otherClasses, placeholder }: Props) => {
+const LocalSearch = ({
+  imgSrc,
+  route,
+  otherClasses,
+  placeholder,
+  iconPosition = "left",
+}: Props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || "";
@@ -51,13 +58,15 @@ const LocalSearch = ({ imgSrc, route, otherClasses, placeholder }: Props) => {
         otherClasses
       )}
     >
-      <Image
-        src={imgSrc}
-        width={24}
-        height={24}
-        alt="Search"
-        className="cursor-pointer"
-      />
+      {iconPosition === "left" && (
+        <Image
+          src={imgSrc}
+          width={24}
+          height={24}
+          alt="Search"
+          className="cursor-pointer"
+        />
+      )}
       <Input
         type="text"
         placeholder={placeholder}
@@ -65,6 +74,15 @@ const LocalSearch = ({ imgSrc, route, otherClasses, placeholder }: Props) => {
         onChange={(e) => setSearchQuery(e.target.value)}
         className="border-none shadow-none outline-none focus:outline-none focus:border-none focus:ring-0 placeholder-gray-400"
       />
+      {iconPosition === "right" && (
+        <Image
+          src={imgSrc}
+          width={24}
+          height={24}
+          alt="Search"
+          className="cursor-pointer"
+        />
+      )}
     </div>
   );
 };
