@@ -1,8 +1,10 @@
 import QuestionCard from "@/components/cards/QuestionCard";
+import DataRenderer from "@/components/DataRenderer";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
+import { EMPTY_QUESTION } from "@/constants/states";
 import { getQuestions } from "@/lib/actions/question.action";
 import Link from "next/link";
 
@@ -89,26 +91,22 @@ const Home = async ({ searchParams }: SearchParams) => {
         />
       </section>
       <HomeFilter />
-      {success ? (
-        <div className="mt-10 flex w-full flex-col gap-6">
-          {questions && questions.length > 0 ? (
-            questions.map((question) => (
+      <DataRenderer
+        success={success}
+        data={questions}
+        error={error}
+        empty={EMPTY_QUESTION}
+        render={(questions) =>
+          questions.map((question) => (
+            <div
+              key={question._id}
+              className="mt-10 flex w-full flex-col gap-6"
+            >
               <QuestionCard key={question._id} question={question} />
-              // <h1 key={question._id}>Questions</h1>
-            ))
-          ) : (
-            <div className="mt-10 flex w-full items-center justify-center">
-              <p className="">
-                No questions to Show, Be the first to ask a question.
-              </p>
             </div>
-          )}
-        </div>
-      ) : (
-        <div className="mt-10 flex w-ful items-center justify-center">
-          <p>{error?.message || "Failed to fetch questions."}</p>
-        </div>
-      )}
+          ))
+        }
+      />
     </>
   );
 };

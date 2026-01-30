@@ -4,6 +4,7 @@ import React from "react";
 import { Badge } from "../ui/badge";
 import { getDeviconClassName } from "@/lib/utils";
 import Image from "next/image";
+import ROUTES from "@/constants/routes";
 
 interface Props {
   _id: string;
@@ -21,7 +22,7 @@ const handleClick = (e: React.MouseEvent) => {
 };
 
 const TagCard = ({
-  // _id,
+  _id,
   questions,
   name,
   showCount,
@@ -62,7 +63,7 @@ const TagCard = ({
         {Content}
       </button>
     ) : (
-      <Link href={""} className="flex justify-between gap-2">
+      <Link href={ROUTES.TAG(_id)} className="flex justify-between gap-2">
         {Content}
       </Link>
     );
