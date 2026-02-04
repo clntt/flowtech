@@ -1,9 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export function cn(...inputs: ClassValue[]) {
+export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
-}
+};
 
 export const techDescriptionMap: { [key: string]: string } = {
   javascript:
@@ -247,7 +247,7 @@ export const getDeviconClassName = (techName: string) => {
     : "devicon-devicon-plain";
 };
 
-export function timeAgo(input: Date | string | number): string {
+export const timeAgo = (input: Date | string | number): string => {
   const date = input instanceof Date ? input : new Date(input);
 
   if (isNaN(date.getTime())) {
@@ -267,4 +267,14 @@ export function timeAgo(input: Date | string | number): string {
 
   const days = Math.floor(hours / 24);
   return `${days} day${days !== 1 ? "s" : ""} ago`;
-}
+};
+
+export const formatNumber = (number: number) => {
+  if (number >= 1000000) {
+    return (number / 1000000).toFixed(1) + "M";
+  } else if (number >= 1000) {
+    return (number / 1000).toFixed(1) + "k";
+  } else {
+    return number.toString();
+  }
+};
