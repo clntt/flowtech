@@ -14,18 +14,20 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AnswerSchema } from "@/lib/validations";
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 import { MDXEditorMethods } from "@mdxeditor/editor";
 import Image from "next/image";
+import { createAnswer } from "@/lib/actions/answer.action";
 
 const Editor = dynamic(() => import("@/components/editor"), {
   ssr: false,
 });
 
-const AnswerForm = () => {
+const AnswerForm = ({ questionId }: { questionId: string }) => {
   const editorRef = useRef<MDXEditorMethods>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [isAnswering, startAnsweringTransition] = useTransition();
   const [isAISubmitting, setIsAISubmitting] = useState(false);
   // 1. Define your form.
 
@@ -37,7 +39,22 @@ const AnswerForm = () => {
   });
 
   const handleSubmit = async (values: z.infer<typeof AnswerSchema>) => {
-    console.log(values);
+    startAnsweringTransition(async () => {
+      const result = await createAnswer({
+        questionId,
+        content: values.content,
+      });
+
+      if (result.success) {
+        toast.success("Success", {
+          description: "Answer posted successfully",
+        });
+      } else {
+        toast.error("Error", {
+          description: result?.error?.message,
+        });
+      }
+    });
   };
 
   return (
@@ -68,7 +85,10 @@ const AnswerForm = () => {
       </div>
 
       <Form {...form}>
-        <form className="mt-10 flex w-dull flex-col gap-10">
+        <form
+          className="mt-10 flex w-dull flex-col gap-10"
+          onSubmit={form.handleSubmit(handleSubmit)}
+        >
           <FormField
             control={form.control}
             name="content"
@@ -88,7 +108,7 @@ const AnswerForm = () => {
 
           <div className="flex justify-end">
             <Button className="w-fit hover:bg-amber-500" type="submit">
-              {isSubmitting ? (
+              {isAnswering ? (
                 <>
                   <p>Posting...</p>
                 </>
