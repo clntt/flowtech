@@ -1,6 +1,5 @@
 "use client";
 // InitializedMDXEditor.tsx
-import type { ForwardedRef } from "react";
 
 import "@mdxeditor/editor/style.css";
 import {
@@ -11,7 +10,6 @@ import {
   markdownShortcutPlugin,
   MDXEditor,
   type MDXEditorMethods,
-  type MDXEditorProps,
   toolbarPlugin,
   ConditionalContents,
   ChangeCodeMirrorLanguage,
@@ -39,16 +37,17 @@ import { Separator } from "@radix-ui/react-dropdown-menu";
 interface Props {
   value: string;
   fieldChange: (value: string) => void;
-  editorRef: ForwardedRef<MDXEditorMethods> | (null & MDXEditorProps);
+  editorRef: React.RefObject<MDXEditorMethods | null>;
 }
 
 const Editor = ({ value, fieldChange, editorRef, ...props }: Props) => {
   const { resolvedTheme } = useTheme();
   const theme = resolvedTheme === "dark" ? [basicDark] : [];
+
   return (
     <MDXEditor
       key={resolvedTheme}
-      markdown={value}
+      markdown={value || ""}
       ref={editorRef}
       onChange={fieldChange}
       plugins={[
