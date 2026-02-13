@@ -257,14 +257,20 @@ export const CreateVoteSchema = z.object({
   }),
 });
 
-export const UpdateVoteCountSchema = CreateVoteSchema.extend({
-  change: z
-    .number()
-    .int()
-    .min(-1, "Change must be -1 (decrement) or 1 (increment)")
-    .max(1, "Change must be -1 (decrement) or 1 (increment)"),
-});
+// export const UpdateVoteCountSchema = CreateVoteSchema.extend({
+//   change: z
+//     .number()
+//     .int()
+//     .min(-1, "Change must be -1 (decrement) or 1 (increment)")
+//     .max(1, "Change must be -1 (decrement) or 1 (increment)"),
+// });
 
+export const UpdateVoteCountSchema = z.object({
+  targetId: z.string(),
+  targetType: z.enum(["question", "answer"]),
+  voteType: z.enum(["upvote", "downvote"]),
+  change: z.union([z.literal(1), z.literal(-1), z.literal(2), z.literal(-2)]),
+});
 export const HasVotedSchema = CreateVoteSchema.pick({
   targetId: true,
   targetType: true,

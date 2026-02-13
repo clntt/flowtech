@@ -54,7 +54,8 @@ interface CreateVoteParams {
 }
 
 interface UpdateVoteCountParams extends CreateVoteParams {
-  change: 1 | -1;
+  // change: 1 | -1;
+  change: 1 | -1 | 2 | -2;
 }
 
 type HasVotedParams = Pick<CreateVoteParams, "targetId" | "targetType">;
@@ -72,8 +73,10 @@ interface GetUserParams {
   userId: string;
 }
 
-interface GetUserQuestionsParams
-  extends Omit<PaginatedSearchParams, "query | filter | sort"> {
+interface GetUserQuestionsParams extends Omit<
+  PaginatedSearchParams,
+  "query | filter | sort"
+> {
   userId: string;
 }
 

@@ -14,6 +14,7 @@ import mongoose, { FilterQuery } from "mongoose";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
 import User from "@/database/user.model";
+import { unstable_noStore as noStore } from "next/cache";
 
 export async function createquestion(
   params: CreateQuestionParams
@@ -115,6 +116,7 @@ export async function createquestion(
 export async function getQuestion(
   params: GetQuestionParams
 ): Promise<ActionResponse<Question>> {
+  noStore();
   const validatedResult = await action({
     params,
     schema: GetQuestionSchema,
