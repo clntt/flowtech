@@ -117,7 +117,7 @@ export async function createVote(
         // remove old vote + add new vote
         await updateVoteCount(
           {
-            change: existingVote.voteType === "upvote" ? -2 : 2,
+            change: 1,
             targetId,
             targetType,
             voteType,
@@ -140,7 +140,12 @@ export async function createVote(
       );
 
       await updateVoteCount(
-        { change: 1, targetId, targetType, voteType },
+        {
+          change: 1,
+          targetId,
+          targetType,
+          voteType,
+        },
         session
       );
     }
