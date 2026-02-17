@@ -37,7 +37,7 @@ export async function toggleSaveQuestion(
   const author = dbUser._id;
 
   try {
-    const question = Question.findById(questionId);
+    const question = await Question.findById(questionId);
     if (!question) throw new Error("Question not found.");
 
     const collection = await Collection.findOne({
@@ -126,9 +126,12 @@ export async function getSavedQuestions(
     return handleError(validatedResult) as ErrorResponse;
   }
 
-  // const sessionUser = validatedResult?.session?.user;
-  // const dbUser = Question.find({ email: sessionUser?.email });
-  const userId = validatedResult?.session?.user?.id;
+  const sessionUser = validatedResult?.session?.user;
+  const dbUser = await User.findOne({ email: sessionUser?.email });
+  if (!dbUser) return handleError(new Error("User not found")) as ErrorResponse;
+
+  // const [{ _id }] = dbUser;
+  const userId = dbUser?._id;
 
   const { filter, page = 1, pageSize = 10, query } = params;
 
@@ -149,7 +152,6 @@ export async function getSavedQuestions(
 
   try {
     const pipeline: PipelineStage[] = [
-      // { $match: { author: new mongoose.Types.ObjectId(userId)}},
       { $match: { author: userId } },
       {
         $lookup: {
@@ -159,7 +161,7 @@ export async function getSavedQuestions(
           as: "question",
         },
       },
-      { $unwind: "question" },
+      { $unwind: "$question" },
       {
         $lookup: {
           from: "users",
@@ -168,7 +170,7 @@ export async function getSavedQuestions(
           as: "question.author",
         },
       },
-      { $unwind: "question.author" },
+      { $unwind: "$question.author" },
       {
         $lookup: {
           from: "tags",
@@ -198,8 +200,8 @@ export async function getSavedQuestions(
     pipeline.push({ $project: { question: 1, author: 1 } });
 
     const questions = await Collection.aggregate(pipeline);
-
-    const isNext = totalCount.count > skip + questions.length;
+    const total = totalCount?.count || 0;
+    const isNext = total > skip + questions.length;
 
     return {
       success: true,
