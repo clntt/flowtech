@@ -1,5 +1,7 @@
 import UserCard from "@/components/cards/UserCard";
 import DataRenderer from "@/components/DataRenderer";
+import { UserFilters } from "@/components/filters";
+import CommonFilter from "@/components/filters/CommonFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import ROUTES from "@/constants/routes";
 import { EMPTY_USERS } from "@/constants/states";
@@ -18,14 +20,18 @@ const Community = async ({ searchParams }: RouteParams) => {
     <div>
       <h1 className="">All Users</h1>
 
-      <div className="mt-11">
+      <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearch
-          // key={}
           imgSrc="/icons/search.svg"
           placeholder=""
           route={ROUTES.COMMUNITY}
           iconPosition="left"
           otherClasses="flex-1"
+        />
+
+        <CommonFilter
+          filters={UserFilters}
+          otherClasses="min-h-[56px] sm:min-w-[170px]"
         />
       </div>
 

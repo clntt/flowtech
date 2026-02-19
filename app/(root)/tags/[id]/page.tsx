@@ -1,5 +1,7 @@
 import QuestionCard from "@/components/cards/QuestionCard";
 import DataRenderer from "@/components/DataRenderer";
+import { TagFilters } from "@/components/filters";
+import CommonFilter from "@/components/filters/CommonFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import ROUTES from "@/constants/routes";
 import { EMPTY_QUESTION } from "@/constants/states";
@@ -24,12 +26,17 @@ const TagDetails = async ({ params, searchParams }: RouteParams) => {
       <section className="flex w-full  flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
         <h1 className="h1-bold ">{tag?.name?.toUpperCase()}</h1>
       </section>
-      <section className="mt-11">
+      <section className="mt-11  flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearch
           route={ROUTES.TAG(id)}
           placeholder="Search questions"
           imgSrc="/icons/search.svg"
           otherClasses="flex-1"
+        />
+
+        <CommonFilter
+          filters={TagFilters}
+          otherClasses="min-h-[56px] sm:min-w-[170px]"
         />
       </section>
       <DataRenderer
