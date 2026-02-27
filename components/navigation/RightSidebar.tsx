@@ -9,12 +9,10 @@ import { EMPTY_QUESTION, EMPTY_TAGS } from "@/constants/states";
 import { getTopTags } from "@/lib/actions/tag.actions";
 
 const RightSidebar = async () => {
-  const { success, data: hotQuestions, error } = await getHotQuestions();
-  const {
-    success: popularTagsSuccess,
-    data: popularTags,
-    error: popularTagsError,
-  } = await getTopTags();
+  const [
+    { success, data: hotQuestions, error },
+    { success: popularTagsSuccess, data: popularTags, error: popularTagsError },
+  ] = await Promise.all([getHotQuestions(), getTopTags()]);
 
   return (
     <section className="bg-gray-800 pt-36 sticky right-0 top-0 flex h-screen w-[350px] flex-col gap-6 overflow-y-auto border-l p-6 max-xl:hidden text-white">
