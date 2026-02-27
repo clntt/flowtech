@@ -3,6 +3,7 @@ import DataRenderer from "@/components/DataRenderer";
 import { HomePageFilters } from "@/components/filters";
 import CommonFilter from "@/components/filters/CommonFilter";
 import HomeFilter from "@/components/filters/HomeFilter";
+import Pagination from "@/components/Pagination";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
@@ -61,12 +62,12 @@ const Home = async ({ searchParams }: SearchParams) => {
 
   const { success, data, error } = await getQuestions({
     page: Number(page) || 1,
-    pageSize: Number(pageSize) || 10,
+    pageSize: Number(pageSize) || 2,
     query: query || "",
     filter: filter || "",
   });
 
-  const { questions } = data || {};
+  const { questions, isNext } = data || {};
 
   // const filteredQuestions = questions?.filter((item) =>
   //   item.title.toLowerCase().includes(query?.toLowerCase())
@@ -115,6 +116,8 @@ const Home = async ({ searchParams }: SearchParams) => {
           ))
         }
       />
+
+      <Pagination page={page} isNext={isNext || false} />
     </>
   );
 };

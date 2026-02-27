@@ -2,6 +2,7 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import DataRenderer from "@/components/DataRenderer";
 import { CollectionFilters } from "@/components/filters";
 import CommonFilter from "@/components/filters/CommonFilter";
+import Pagination from "@/components/Pagination";
 import LocalSearch from "@/components/search/LocalSearch";
 import ROUTES from "@/constants/routes";
 import { EMPTY_COLLECTIONS } from "@/constants/states";
@@ -16,12 +17,12 @@ const Collections = async ({ searchParams }: SearchParams) => {
 
   const { success, data, error } = await getSavedQuestions({
     page: Number(page) || 1,
-    pageSize: Number(pageSize) || 10,
+    pageSize: Number(pageSize) || 2,
     query: query || "",
     filter: filter || "",
   });
 
-  const { collection } = data || {};
+  const { collection, isNext } = data || {};
   return (
     <>
       <section className="flex w-full  flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -60,6 +61,7 @@ const Collections = async ({ searchParams }: SearchParams) => {
           ))
         }
       />
+      <Pagination page={page} isNext={isNext || false} />
     </>
   );
 };

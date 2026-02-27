@@ -2,6 +2,7 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import DataRenderer from "@/components/DataRenderer";
 import { TagFilters } from "@/components/filters";
 import CommonFilter from "@/components/filters/CommonFilter";
+import Pagination from "@/components/Pagination";
 import LocalSearch from "@/components/search/LocalSearch";
 import ROUTES from "@/constants/routes";
 import { EMPTY_QUESTION } from "@/constants/states";
@@ -19,7 +20,7 @@ const TagDetails = async ({ params, searchParams }: RouteParams) => {
     query,
   });
 
-  const { tag, questions } = data || {};
+  const { tag, questions, isNext } = data || {};
 
   return (
     <>
@@ -55,6 +56,7 @@ const TagDetails = async ({ params, searchParams }: RouteParams) => {
           ))
         }
       />
+      <Pagination page={page} isNext={isNext || false} />
     </>
   );
 };

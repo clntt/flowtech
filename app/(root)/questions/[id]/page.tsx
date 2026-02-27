@@ -3,6 +3,7 @@ import TagCard from "@/components/cards/TagCard";
 import Preview from "@/components/editor/Preview";
 import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
+import Pagination from "@/components/Pagination";
 import SavedQuestion from "@/components/questions/SavedQuestion";
 import UserAvatar from "@/components/UserAvatar";
 import Votes from "@/components/votes/Votes";
@@ -132,6 +133,8 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
           error={answersError}
           totalAnswers={answersResult?.totalAnswer || 0}
         />
+
+        <Pagination page={page} isNext={answersResult?.isNext || false} />
       </section>
 
       <section className="my-5">
