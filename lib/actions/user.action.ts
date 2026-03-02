@@ -1,6 +1,6 @@
 "use server";
 
-import { FilterQuery } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import { GetUserSchema, PaginatedSearchParamsSchema } from "../validations";
@@ -72,7 +72,7 @@ export async function getUsers(
 
 export async function getUser(params: GetUserParams): Promise<
   ActionResponse<{
-    user: typeof User;
+    user: User;
     totalQuestions: number;
     totalAnswers: number;
   }>
@@ -94,10 +94,17 @@ export async function getUser(params: GetUserParams): Promise<
     });
   }
 
+  if (!Types.ObjectId.isValid(userId)) {
+    return {
+      success: false,
+      error: { message: "Invalid user id" },
+    };
+  }
+
   try {
     const user = await User.findById(userId);
 
-    const totalQuestions = await Question.countDocuments({ author: user });
+    const totalQuestions = await Question.countDocuments({ author: user._id });
     const totalAnswers = await Answer.countDocuments({ author: user });
 
     return {
