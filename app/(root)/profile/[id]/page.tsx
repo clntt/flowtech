@@ -4,6 +4,7 @@ import {
   getUser,
   getUserAnswers,
   getUserQuestions,
+  getUserTopTags,
 } from "@/lib/actions/user.action";
 import { notFound } from "next/navigation";
 import dayjs from "dayjs";
@@ -14,10 +15,11 @@ import { User } from "@/database";
 import Stats from "@/components/user/Stats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DataRenderer from "@/components/DataRenderer";
-import { EMPTY_ANSWERS, EMPTY_QUESTION } from "@/constants/states";
+import { EMPTY_ANSWERS, EMPTY_QUESTION, EMPTY_TAGS } from "@/constants/states";
 import QuestionCard from "@/components/cards/QuestionCard";
 import Pagination from "@/components/Pagination";
 import AnswerCard from "@/components/cards/AnswerCard";
+import TagCard from "@/components/cards/TagCard";
 const Profile = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
 
@@ -75,8 +77,18 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
     pageSize: Number(pageSize) || 10,
   });
 
+  const {
+    success: userTopTagsSuccess,
+    data: userTopTags,
+    error: userTopTagsError,
+  } = await getUserTopTags({
+    userId: id,
+  });
+
   const { questions, isNext: hasMoreQuestions } = userQuestions!;
   const { answers, isNext: hasMoreAnswers } = userAnswers!;
+  const { tags } = userTopTags!;
+  console.log(`USERTAGS: ${tags}`);
 
   return (
     <>
@@ -146,7 +158,6 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
             value="top-posts"
             className="mt-5 flex w-full flex-col gap-6"
           >
-            List of Questions
             <DataRenderer
               data={questions}
               error={userQuestionError}
@@ -164,9 +175,8 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
           </TabsContent>
           <TabsContent
             value="answers"
-            className="mt-5 flex w-full flex-col gap-6"
+            className="mt-3 flex w-full flex-col gap-6"
           >
-            List of Answers
             <DataRenderer
               data={answers}
               error={userAnswerError}
@@ -193,8 +203,27 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
 
         <div className="flex w-full min-w-[250px] flex-1 flex-col max-lg:hidden">
           <h3>Top Tech</h3>
-          <div className="mt-7 flex flex-col gap-4">
-            <p>List of Tags</p>
+          <div className="mt-3 flex flex-col gap-4">
+            <DataRenderer
+              data={tags}
+              error={userTopTagsError}
+              empty={EMPTY_TAGS}
+              success={userTopTagsSuccess}
+              render={(tags) => (
+                <div className="mt-5 flex w-full flex-col gap-[7px]">
+                  {tags?.map((tag) => (
+                    <TagCard
+                      _id={tag?._id}
+                      key={tag?.name}
+                      name={tag.name}
+                      questions={tag.count}
+                      showCount
+                      compact
+                    />
+                  ))}
+                </div>
+              )}
+            />
           </div>
         </div>
       </section>
