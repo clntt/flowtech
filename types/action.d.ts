@@ -146,3 +146,9 @@ interface GlobalSearchParams {
   query: string;
   type: string | null;
 }
+
+interface BadgeCounts {
+  GOLD: number;
+  SILVER: number;
+  BRONZE: number;
+}

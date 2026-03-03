@@ -7,6 +7,7 @@ import { auth } from "@/auth";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { User } from "@/database";
+import Stats from "@/components/user/Stats";
 
 const Profile = async ({ params }: RouteParams) => {
   const { id } = await params;
@@ -53,51 +54,63 @@ const Profile = async ({ params }: RouteParams) => {
   console.log(`dbEmail: ${dbEmail}`);
 
   return (
-    <section className="flex flex-col-reverse items-start justify-between sm:flex-row">
-      <div className="flex flex-col items-ctart gap-4 lg:flex-row">
-        <UserAvatar
-          id={_id}
-          name={name}
-          imageUrl={image}
-          className="size-[140px] rounded-full object-cover"
-          fallbackClassName="text-6xl font-bold"
-        />
+    <>
+      <section className="flex flex-col-reverse items-start justify-between sm:flex-row">
+        <div className="flex flex-col items-ctart gap-4 lg:flex-row">
+          <UserAvatar
+            id={_id}
+            name={name}
+            imageUrl={image}
+            className="size-[140px] rounded-full object-cover"
+            fallbackClassName="text-6xl font-bold"
+          />
 
-        <div className="mt-3">
-          <h2 className="">{name}</h2>
-          <p>@{username}</p>
+          <div className="mt-3">
+            <h2 className="">{name}</h2>
+            <p>@{username}</p>
 
-          <div className="mt-5 flex flex-wrap items-center justify-start gap-5">
-            {portfolio && (
+            <div className="mt-5 flex flex-wrap items-center justify-start gap-5">
+              {portfolio && (
+                <ProfileLink
+                  imgUrl="/icons/link.svg"
+                  href={portfolio}
+                  title="Portfolio"
+                />
+              )}
+
+              {location && (
+                <ProfileLink imgUrl="/icons/location.svg" title="location" />
+              )}
+
               <ProfileLink
-                imgUrl="/icons/link.svg"
-                href={portfolio}
-                title="Portfolio"
+                imgUrl="/icons/calendar.svg"
+                title={dayjs(createdAt).format("MMMM YYYY")}
               />
-            )}
+            </div>
 
-            {location && (
-              <ProfileLink imgUrl="/icons/location.svg" title="location" />
-            )}
-
-            <ProfileLink
-              imgUrl="/icons/calendar.svg"
-              title={dayjs(createdAt).format("MMMM YYYY")}
-            />
+            {bio && <p className="mt-8">{bio}</p>}
           </div>
-
-          {bio && <p className="mt-8">{bio}</p>}
         </div>
-      </div>
 
-      <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
-        {loggedInUser?.user?.id === id && (
-          <Link href="/profile/edit">
-            <Button>Edit Profile</Button>
-          </Link>
-        )}
-      </div>
-    </section>
+        <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
+          {loggedInUser?.user?.id === id && (
+            <Link href="/profile/edit">
+              <Button>Edit Profile</Button>
+            </Link>
+          )}
+        </div>
+      </section>
+
+      <Stats
+        totalQuestions={totalQuestions}
+        totalAnswers={totalAnswers}
+        badges={{
+          GOLD: 0,
+          SILVER: 0,
+          BRONZE: 0,
+        }}
+      />
+    </>
   );
 };
 
