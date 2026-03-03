@@ -3,9 +3,14 @@
 import { FilterQuery, Types } from "mongoose";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { GetUserSchema, PaginatedSearchParamsSchema } from "../validations";
+import {
+  GetUserQuestionsSchema,
+  GetUserSchema,
+  PaginatedSearchParamsSchema,
+} from "../validations";
 import { Answer, Question, User } from "@/database";
 import { toast } from "sonner";
+import { auth } from "@/auth";
 
 export async function getUsers(
   params: PaginatedSearchParams
@@ -115,6 +120,115 @@ export async function getUser(params: GetUserParams): Promise<
         totalAnswers,
         totalQuestions,
         user: JSON.parse(JSON.stringify(user)),
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function getUserQuestions(params: GetUserQuestionsParams): Promise<
+  ActionResponse<{
+    questions: Question[];
+    isNext: boolean;
+  }>
+> {
+  const loggedInUser = await auth();
+
+  const dbUser = await User.findOne({
+    email: loggedInUser?.user?.email,
+  });
+
+  const dbUserId = String(dbUser._id);
+  const validatedResult = await action({
+    params,
+    schema: GetUserQuestionsSchema,
+  });
+
+  if (validatedResult instanceof Error) {
+    return handleError(validatedResult) as ErrorResponse;
+  }
+
+  const { userId, page = 1, pageSize = 10 } = params;
+
+  console.log(`USERID :: ${userId}`);
+  console.log(`LOGGEDIN FROM SERVER :: ${dbUser}`);
+  console.log(`DBUSERID FROM SERVER :: ${dbUserId}`);
+
+  const skip = (Number(page) - 1) * pageSize;
+  const limit = pageSize;
+
+  try {
+    // const totalQuestions = await Question.countDocuments({ author: userId });
+    const totalQuestions = await Question.countDocuments({ author: dbUserId });
+
+    const questions = await Question.find({ author: dbUserId })
+      .populate("tags", "name")
+      .populate("author", "name image")
+      .skip(skip)
+      .limit(limit);
+
+    const isNext = totalQuestions > skip + questions.length;
+
+    return {
+      success: true,
+      data: {
+        questions: JSON.parse(JSON.stringify(questions)),
+        isNext,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function getUserAnswers(params: GetUserQuestionsParams): Promise<
+  ActionResponse<{
+    answers: Answer[];
+    isNext: boolean;
+  }>
+> {
+  const loggedInUser = await auth();
+
+  const dbUser = await User.findOne({
+    email: loggedInUser?.user?.email,
+  });
+
+  const dbUserId = String(dbUser._id);
+  const validatedResult = await action({
+    params,
+    schema: GetUserQuestionsSchema,
+  });
+
+  if (validatedResult instanceof Error) {
+    return handleError(validatedResult) as ErrorResponse;
+  }
+
+  const { userId, page = 1, pageSize = 10 } = params;
+
+  console.log(`USERID :: ${userId}`);
+  console.log(`LOGGEDIN FROM SERVER :: ${dbUser}`);
+  console.log(`DBUSERID FROM SERVER :: ${dbUserId}`);
+
+  const skip = (Number(page) - 1) * pageSize;
+  const limit = pageSize;
+
+  try {
+    // const totalQuestions = await Question.countDocuments({ author: userId });
+    const totalAnswers = await Answer.countDocuments({ author: dbUserId });
+
+    const answers = await Answer.find({ author: dbUserId })
+      .populate("author", "_id name image")
+      .skip(skip)
+      .limit(limit);
+
+    const isNext = totalAnswers > skip + answers.length;
+
+    return {
+      success: true,
+      data: {
+        answers: JSON.parse(JSON.stringify(answers)),
+        isNext,
       },
     };
   } catch (error) {

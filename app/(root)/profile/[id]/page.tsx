@@ -1,6 +1,10 @@
 import ProfileLink from "@/components/user/ProfileLink";
 import UserAvatar from "@/components/UserAvatar";
-import { getUser } from "@/lib/actions/user.action";
+import {
+  getUser,
+  getUserAnswers,
+  getUserQuestions,
+} from "@/lib/actions/user.action";
 import { notFound } from "next/navigation";
 import dayjs from "dayjs";
 import { auth } from "@/auth";
@@ -9,8 +13,15 @@ import { Button } from "@/components/ui/button";
 import { User } from "@/database";
 import Stats from "@/components/user/Stats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-const Profile = async ({ params }: RouteParams) => {
+import DataRenderer from "@/components/DataRenderer";
+import { EMPTY_ANSWERS, EMPTY_QUESTION } from "@/constants/states";
+import QuestionCard from "@/components/cards/QuestionCard";
+import Pagination from "@/components/Pagination";
+import AnswerCard from "@/components/cards/AnswerCard";
+const Profile = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
+
+  const { page, pageSize } = await searchParams;
   if (!id) throw notFound();
 
   const loggedInUser = await auth();
@@ -24,11 +35,6 @@ const Profile = async ({ params }: RouteParams) => {
     userId: dbUserId,
   });
 
-  console.log(`dbUser: ${dbUser}`);
-  console.log(`dbUserId: ${dbUserId}`);
-  console.log(`ID: ${id}`);
-  console.log(`LOGGEDIN: ${loggedInUser?.user?.email}`);
-
   if (!success)
     return (
       <div>
@@ -40,7 +46,7 @@ const Profile = async ({ params }: RouteParams) => {
   const {
     _id,
     createdAt,
-    email,
+    // email,
     name,
     username,
     image,
@@ -49,9 +55,28 @@ const Profile = async ({ params }: RouteParams) => {
     bio,
   } = user!;
 
-  const dbEmail = User.findOne({ email: email });
+  const {
+    success: userQuestionSuccess,
+    data: userQuestions,
+    error: userQuestionError,
+  } = await getUserQuestions({
+    userId: id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+  });
 
-  console.log(`dbEmail: ${dbEmail}`);
+  const {
+    success: userAnswerSuccess,
+    data: userAnswers,
+    error: userAnswerError,
+  } = await getUserAnswers({
+    userId: id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+  });
+
+  const { questions, isNext: hasMoreQuestions } = userQuestions!;
+  const { answers, isNext: hasMoreAnswers } = userAnswers!;
 
   return (
     <>
@@ -122,12 +147,46 @@ const Profile = async ({ params }: RouteParams) => {
             className="mt-5 flex w-full flex-col gap-6"
           >
             List of Questions
+            <DataRenderer
+              data={questions}
+              error={userQuestionError}
+              empty={EMPTY_QUESTION}
+              success={userQuestionSuccess}
+              render={(questions) => (
+                <div className="mt-7 flex w-full flex-col gap-[30px]">
+                  {questions?.map((item) => (
+                    <QuestionCard key={item._id} question={item} />
+                  ))}
+                </div>
+              )}
+            />
+            <Pagination page={page} isNext={hasMoreQuestions} />
           </TabsContent>
           <TabsContent
             value="answers"
             className="mt-5 flex w-full flex-col gap-6"
           >
             List of Answers
+            <DataRenderer
+              data={answers}
+              error={userAnswerError}
+              empty={EMPTY_ANSWERS}
+              success={userAnswerSuccess}
+              render={(answers) => (
+                <div className="mt-7 flex w-full flex-col gap-[30px]">
+                  {answers?.map((item) => (
+                    <AnswerCard
+                      key={item._id}
+                      {...item}
+                      content={item.content.slice(0, 27)}
+                      containerClasses="rounded-[10px] px-7 py-9 sm:px-11"
+                      showReadMore
+                    />
+                  ))}
+                </div>
+              )}
+            />
+            <Pagination page={page} isNext={hasMoreAnswers} />
           </TabsContent>
           <TabsContent value="password">Change your password here.</TabsContent>
         </Tabs>
