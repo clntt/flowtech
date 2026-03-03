@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { User } from "@/database";
 import Stats from "@/components/user/Stats";
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const Profile = async ({ params }: RouteParams) => {
   const { id } = await params;
   if (!id) throw notFound();
@@ -110,6 +110,35 @@ const Profile = async ({ params }: RouteParams) => {
           BRONZE: 0,
         }}
       />
+
+      <section className="mt-10 flex gap-10">
+        <Tabs defaultValue="top-posts" className="flex-[2]">
+          <TabsList className="min-h-[42px] p-1">
+            <TabsTrigger value="top-posts">Questions</TabsTrigger>
+            <TabsTrigger value="answers">Answers</TabsTrigger>
+          </TabsList>
+          <TabsContent
+            value="top-posts"
+            className="mt-5 flex w-full flex-col gap-6"
+          >
+            List of Questions
+          </TabsContent>
+          <TabsContent
+            value="answers"
+            className="mt-5 flex w-full flex-col gap-6"
+          >
+            List of Answers
+          </TabsContent>
+          <TabsContent value="password">Change your password here.</TabsContent>
+        </Tabs>
+
+        <div className="flex w-full min-w-[250px] flex-1 flex-col max-lg:hidden">
+          <h3>Top Tech</h3>
+          <div className="mt-7 flex flex-col gap-4">
+            <p>List of Tags</p>
+          </div>
+        </div>
+      </section>
     </>
   );
 };
