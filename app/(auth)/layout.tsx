@@ -16,7 +16,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
           </div>
 
           <Image
-            src="images/site-logo.svg"
+            src="/images/flow-solid.png"
             alt="flowtech logo"
             width={50}
             height={50}

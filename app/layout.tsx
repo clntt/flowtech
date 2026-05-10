@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: "FlowTech",
   description: "A Tech app built for tech enthusiasts and questions.",
   icons: {
-    icon: "/images/site-logo.svg",
+    icon: "/images/flow-solid.png",
   },
 };
 

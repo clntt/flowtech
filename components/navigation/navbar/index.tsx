@@ -13,7 +13,8 @@ const Navbar = async () => {
     <nav className="flex-between bg-gray-800 fixed z-50 w-full p-6 dark:shadow-none sm:px-12 shadow-amber-100 gap-5 text-white">
       <Link href="/" className="flex items-center gap-1">
         <Image
-          src="/images/site-logo.svg"
+          // src="/images/site-logo.svg"
+          src="/images/flow-solid.png"
           alt="site-logo"
           width={23}
           height={23}
